@@ -1,0 +1,41 @@
+/* ナムドル好み表だけのデザイン変更（既存サイトには影響しません） */
+
+/* メンバーを選ぶ画面の写真の大きさ：数字を増やすほど1枚が小さくなる */
+.grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+/* 名前が1行の人と2行の人がいても、写真の高さを揃える */
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.card .name {
+  font-size: .75rem;
+}
+
+/* ここにいないメンバーを選ぶ欄 */
+.ko-extra h3 { margin: 0 0 10px; font-size: 1rem; }
+.ko-extra-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.ko-extra .ko-icon { border-radius: 8px; }
+.ko-extra > .btn { width: 100%; }
+.ko-extra-row .btn { flex: none; }
+.ko-extra-row:last-child { margin-bottom: 0; }
+
+/* ライトモードの色：暖色をやめて白に近いニュートラルに（ダークモードは変わりません） */
+:root {
+  --bg: #fcfcfc;
+  --text: #2a2a2a;
+  --line: #e6e6e6;
+  --noimg: #e2e2e2;
+}
+
+/* 文字の主張を抑える */
+.top a { font-weight: 600; }
+h2 { font-size: 1.1rem; font-weight: 600; }
+.btn { font-weight: 500; }
+.card .name, .ko-row, .ko-chip, .ko-who b { font-weight: 500; }
+.ko-extra h3 { font-size: .95rem; font-weight: 600; }
+.ko-icon-empty, .ko-dash { font-weight: 500; }
