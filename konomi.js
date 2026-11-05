@@ -674,6 +674,7 @@
       <p class="muted center" id="hint" hidden>${k("tableHint")}</p>
       <div class="actions" id="actions" hidden>
         <a class="btn primary" id="download" download="konomi.png">${k("saveButton")}</a>
+        <a class="btn" id="tweet" target="_blank" rel="noopener">${k("tweetButton")}</a>
       </div>
       <p class="center muted" id="note" hidden>${k("saveNote")}</p>
       <div class="actions"><button class="btn small" id="restart">${k("restartButton")}</button></div>`;
@@ -704,6 +705,29 @@
     $("hint").hidden = false;
     $("actions").hidden = false;
     $("note").hidden = false;
+
+    // Xの投稿画面を開く。投稿画面のリンクでは画像を渡せないので、
+    // 画像を渡せるスマホでは共有メニューを使う（PCの共有メニューにはXが出ないことがあるので使わない）
+    const siteUrl = new URL("./", location.href).href;
+    const tweet = new URL("https://twitter.com/intent/tweet");
+    tweet.searchParams.set("text", K.shareText);
+    tweet.searchParams.set("url", siteUrl);
+    if (K.hashtags) tweet.searchParams.set("hashtags", K.hashtags);
+    $("tweet").href = tweet.toString();
+    const file = new File([blob], "konomi.png", { type: "image/png" });
+    if (matchMedia("(pointer: coarse)").matches && navigator.canShare && navigator.canShare({ files: [file] })) {
+      $("tweet").onclick = async e => {
+        e.preventDefault();
+        try {
+          // アプリによっては url を落とすので、文章の中にリンクとハッシュタグを入れておく
+          const tags = (K.hashtags || "").split(",").map(s => s.trim()).filter(Boolean).map(s => "#" + s).join(" ");
+          const text = [K.shareText, tags, siteUrl].filter(Boolean).join("\n");
+          await navigator.share({ files: [file], text });
+        } catch (err) {
+          if (err.name !== "AbortError") showAlert(K.shareFailed);
+        }
+      };
+    }
 
     // タップした位置のマスを選び直す（長押しで保存できるよう、画像の上には何も重ねない）
     $("out").onclick = e => {
